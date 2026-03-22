@@ -190,9 +190,12 @@ export default function Charoku() {
     goldLight: "#FBF6EC",
   };
 
+  const serifFont = '"Zen Old Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif';
+  const sansFont = '"Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif';
+
   const s = {
     app: {
-      fontFamily: '"Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif',
+      fontFamily: sansFont,
       background: colors.bg,
       color: colors.textPrimary,
       minHeight: "100vh",
@@ -350,95 +353,131 @@ export default function Charoku() {
     const kakejikuUrl = ZENGO_IMAGES[dailyZen.name];
 
     return (
-    <div style={{ padding: "0 20px" }}>
-      {/* Kakejiku / seasonal image hero */}
+    <div style={{ padding: "0" }}>
+      {/* Hero section */}
       <div style={{
-        marginBottom: 0,
-        borderRadius: 16,
-        overflow: "hidden",
         position: "relative",
+        overflow: "hidden",
         background: colors.warm,
+        marginBottom: 0,
       }}>
-        {/* Image */}
+        {/* Image or fallback */}
         {!kakejikuError && kakejikuUrl ? (
-          <div style={{ position: "relative" }}>
-            <img
-              src={kakejikuUrl}
-              alt={`${dailyZen.name} 掛軸`}
-              onError={() => setKakejikuError(true)}
-              style={{
-                width: "100%",
-                height: 280,
-                objectFit: "cover",
-                objectPosition: "center top",
-                display: "block",
-                filter: "brightness(0.95)",
-              }}
-            />
-            {/* Gradient overlay for text readability */}
-            <div style={{
-              position: "absolute",
-              bottom: 0, left: 0, right: 0,
-              height: "60%",
-              background: "linear-gradient(transparent, rgba(250,250,248,0.85) 70%, rgba(250,250,248,1))",
-            }} />
-          </div>
+          <img
+            src={kakejikuUrl}
+            alt={`${dailyZen.name} 掛軸`}
+            onError={() => setKakejikuError(true)}
+            style={{
+              width: "100%",
+              height: 380,
+              objectFit: "cover",
+              objectPosition: "center top",
+              display: "block",
+              filter: "brightness(0.88) saturate(0.9)",
+            }}
+          />
         ) : (
           <div style={{
-            height: 160,
-            background: `linear-gradient(135deg, ${colors.warm} 0%, ${colors.accentLight} 100%)`,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}>
-            <span style={{ fontSize: 48, fontWeight: 200, color: colors.accentSoft, letterSpacing: "0.2em" }}>
-              {dailyZen.name.slice(0, 2)}
-            </span>
-          </div>
+            height: 380,
+            background: `linear-gradient(160deg, #2C2C2C 0%, #4a5240 50%, ${colors.accent} 100%)`,
+          }} />
         )}
+
+        {/* Dark gradient overlay */}
+        <div style={{
+          position: "absolute",
+          inset: 0,
+          background: "linear-gradient(to bottom, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.15) 40%, rgba(0,0,0,0.72) 100%)",
+        }} />
+
+        {/* Month badge – top left */}
+        <div style={{
+          position: "absolute",
+          top: 20,
+          left: 20,
+          background: "rgba(255,255,255,0.15)",
+          backdropFilter: "blur(8px)",
+          border: "0.5px solid rgba(255,255,255,0.3)",
+          borderRadius: 20,
+          padding: "5px 14px",
+        }}>
+          <span style={{ fontSize: 11, color: "rgba(255,255,255,0.9)", letterSpacing: "0.18em" }}>
+            {MONTHS[currentMonth].replace("月","")}月 · {MONTH_NAMES[currentMonth]}
+          </span>
+        </div>
+
+        {/* Zen word overlay – bottom of hero */}
+        <div style={{
+          position: "absolute",
+          bottom: 0, left: 0, right: 0,
+          padding: "0 28px 32px",
+          textAlign: "center",
+        }}>
+          {/* Decorative line */}
+          <div style={{
+            width: 40,
+            height: 1,
+            background: "rgba(255,255,255,0.4)",
+            margin: "0 auto 20px",
+          }} />
+          <h1 style={{
+            fontFamily: serifFont,
+            fontSize: 42,
+            fontWeight: 400,
+            letterSpacing: "0.18em",
+            color: "#FFFFFF",
+            lineHeight: 1.3,
+            marginBottom: 10,
+            textShadow: "0 2px 16px rgba(0,0,0,0.4)",
+          }}>
+            {dailyZen.name}
+          </h1>
+          <p style={{
+            fontSize: 12,
+            color: "rgba(255,255,255,0.7)",
+            letterSpacing: "0.15em",
+            marginBottom: 0,
+          }}>
+            {dailyZen.reading}
+          </p>
+        </div>
       </div>
 
-      {/* Seasonal zen greeting */}
+      {/* Meaning card */}
       <div style={{
-        padding: "20px 24px 36px",
-        textAlign: "center",
+        margin: "-1px 20px 0",
+        background: colors.card,
+        borderRadius: "0 0 20px 20px",
+        border: `0.5px solid ${colors.border}`,
+        borderTop: "none",
+        padding: "22px 24px 24px",
         marginBottom: 24,
-        marginTop: kakejikuUrl && !kakejikuError ? -40 : 0,
-        position: "relative",
-        zIndex: 1,
       }}>
-        <p style={{ fontSize: 11, color: colors.textTertiary, marginBottom: 16, letterSpacing: "0.15em" }}>
-          {MONTHS[currentMonth].replace("月","")}月 ─ {MONTH_NAMES[currentMonth]}
-        </p>
-        <h1 style={{
-          fontSize: 32,
-          fontWeight: 300,
-          letterSpacing: "0.12em",
-          marginBottom: 12,
-          color: colors.textPrimary,
-          lineHeight: 1.4,
-        }}>
-          {dailyZen.name}
-        </h1>
-        <p style={{ fontSize: 13, color: colors.textSecondary, letterSpacing: "0.08em", marginBottom: 20 }}>
-          {dailyZen.reading}
-        </p>
         <p style={{
+          fontFamily: serifFont,
           fontSize: 14,
-          color: colors.sumiLight,
-          lineHeight: 1.8,
-          maxWidth: 320,
-          margin: "0 auto 20px",
+          color: colors.sumi,
+          lineHeight: 2.0,
+          textAlign: "center",
+          marginBottom: 14,
         }}>
           {dailyZen.meaning}
         </p>
-        <p style={{ fontSize: 12, color: colors.textTertiary, lineHeight: 1.6, fontStyle: "italic" }}>
+        <p style={{
+          fontSize: 11,
+          color: colors.textTertiary,
+          lineHeight: 1.7,
+          textAlign: "center",
+          fontStyle: "italic",
+          borderTop: `0.5px solid ${colors.border}`,
+          paddingTop: 14,
+        }}>
           {SEASONAL_GREETINGS[currentMonth]}
         </p>
       </div>
 
       {/* Quick actions */}
-      <div style={{ display: "flex", gap: 12, marginBottom: 28 }}>
+      <div style={{ display: "flex", gap: 12, marginBottom: 28, padding: "0 20px" }}>
         <button
           onClick={() => { setSelectedZen(dailyZen); fetchAiExplanation(dailyZen); }}
           style={{
@@ -497,7 +536,7 @@ export default function Charoku() {
 
       {/* Favorites preview */}
       {favoriteZenItems.length > 0 && (
-        <div style={{ marginBottom: 24 }}>
+        <div style={{ marginBottom: 24, padding: "0 20px" }}>
           <h3 style={{ fontSize: 14, fontWeight: 500, marginBottom: 12, color: colors.textSecondary }}>
             お気に入りの禅語・銘
           </h3>
@@ -528,7 +567,7 @@ export default function Charoku() {
 
       {/* Recent videos */}
       {videos.length > 0 && (
-        <div>
+        <div style={{ padding: "0 20px" }}>
           <h3 style={{ fontSize: 14, fontWeight: 500, marginBottom: 12, color: colors.textSecondary }}>
             最近の動画
           </h3>
@@ -943,8 +982,8 @@ export default function Charoku() {
           </div>
 
           <div style={{ textAlign: "center", padding: "24px 0 20px" }}>
-            <h2 style={{ fontSize: 28, fontWeight: 300, letterSpacing: "0.1em", marginBottom: 8 }}>{z.name}</h2>
-            <p style={{ fontSize: 14, color: colors.textSecondary, letterSpacing: "0.05em" }}>{z.reading}</p>
+            <h2 style={{ fontFamily: serifFont, fontSize: 32, fontWeight: 400, letterSpacing: "0.15em", marginBottom: 10, lineHeight: 1.4 }}>{z.name}</h2>
+            <p style={{ fontSize: 13, color: colors.textSecondary, letterSpacing: "0.1em" }}>{z.reading}</p>
           </div>
 
           <div style={{ ...s.card, background: colors.warm, marginBottom: 16, border: "none" }}>
@@ -1118,7 +1157,7 @@ export default function Charoku() {
               style={{ ...s.card, cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4, flexWrap: "wrap" }}>
-                  <span style={{ fontSize: 16, fontWeight: 400, letterSpacing: "0.05em" }}>{z.name}</span>
+                  <span style={{ fontFamily: serifFont, fontSize: 17, fontWeight: 400, letterSpacing: "0.08em" }}>{z.name}</span>
                   <span style={{
                     fontSize: 10, color: z.type === "禅語" ? colors.fuji : colors.accent,
                     background: z.type === "禅語" ? colors.fujiLight : colors.accentLight,
@@ -1173,7 +1212,7 @@ export default function Charoku() {
                 style={{ ...s.card, cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
-                    <span style={{ fontSize: 16, letterSpacing: "0.05em" }}>{z.name}</span>
+                    <span style={{ fontFamily: serifFont, fontSize: 17, letterSpacing: "0.08em" }}>{z.name}</span>
                     <span style={{ fontSize: 10, color: colors.fuji, background: colors.fujiLight, padding: "2px 8px", borderRadius: 6 }}>{z.type}</span>
                   </div>
                   <p style={{ fontSize: 12, color: colors.textTertiary }}>{z.reading}</p>
