@@ -1,0 +1,163 @@
+/* ============================================================
+   茶録 - Charoku  |  Global Styles
+   Inspired by East-Asian artifact card aesthetics
+   ============================================================ */
+
+:root {
+  --bg-canvas: #F0EDE6;
+  --bg-warm: #E8E4DB;
+  --card-dark: #1E2820;
+  --card-dark-lighter: #263028;
+  --card-texture: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.04"/></svg>');
+
+  --gold-primary: #C9A84C;
+  --gold-light: #E8D48B;
+  --gold-dark: #8C7434;
+  --gold-bg: rgba(201, 168, 76, 0.08);
+
+  --matcha: #7B8F6B;
+  --matcha-light: #EEF2EA;
+  --matcha-soft: #D4DCC9;
+
+  --fuji: #B8A9C9;
+  --fuji-light: #F0ECF5;
+
+  --seal-red: #A63326;
+
+  --text-primary: #2C2A26;
+  --text-secondary: #6B6860;
+  --text-tertiary: #A8A49C;
+
+  --border-light: #DDD9D0;
+  --border-dark: rgba(201, 168, 76, 0.15);
+
+  --foil-gradient: linear-gradient(
+    135deg,
+    var(--gold-dark) 0%,
+    var(--gold-primary) 30%,
+    var(--gold-light) 50%,
+    var(--gold-primary) 70%,
+    var(--gold-dark) 100%
+  );
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-canvas);
+  background-image:
+    radial-gradient(circle at 70% 20%, rgba(201, 168, 76, 0.06) 0%, transparent 50%),
+    var(--card-texture);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Gold foil text effect */
+.text-foil {
+  background: var(--foil-gradient);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: shimmer 8s linear infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes emerge {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 8px rgba(201, 168, 76, 0.2); }
+  50% { box-shadow: 0 0 20px rgba(201, 168, 76, 0.4); }
+}
+
+/* Noise texture overlay for dark cards */
+.card-texture::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--card-texture);
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 1;
+  border-radius: inherit;
+}
+
+/* Seal stamp style */
+.seal-stamp {
+  width: 28px;
+  height: 42px;
+  border: 1px solid var(--seal-red);
+  border-radius: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.seal-stamp::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border: 0.5px solid var(--seal-red);
+  border-radius: 12px;
+}
+
+/* Inner frame for dark cards */
+.card-inner-frame {
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
+  border: 1px solid rgba(201, 168, 76, 0.12);
+  pointer-events: none;
+  z-index: 2;
+  border-radius: inherit;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-light);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary);
+}

@@ -172,31 +172,38 @@ export default function Charoku() {
   // STYLES
   // ============================================================
   const colors = {
-    bg: "#FAFAF8",
-    card: "#FFFFFF",
-    accent: "#7B8F6B",    // matcha green
+    bg: "#F0EDE6",
+    bgWarm: "#E8E4DB",
+    card: "#FEFDFB",
+    cardDark: "#1E2820",
+    cardDarkLighter: "#263028",
+    accent: "#7B8F6B",
     accentLight: "#EEF2EA",
     accentSoft: "#D4DCC9",
-    fuji: "#B8A9C9",      // wisteria
+    fuji: "#B8A9C9",
     fujiLight: "#F0ECF5",
-    sumi: "#5C5C5C",      // charcoal
+    sumi: "#5C5C5C",
     sumiLight: "#8A8A8A",
-    border: "#E8E6E0",
-    textPrimary: "#2C2C2C",
-    textSecondary: "#7A7A7A",
-    textTertiary: "#ABABAB",
+    border: "#DDD9D0",
+    borderGold: "rgba(201,168,76,0.15)",
+    textPrimary: "#2C2A26",
+    textSecondary: "#6B6860",
+    textTertiary: "#A8A49C",
     warm: "#F5F2ED",
-    gold: "#C4A35A",
-    goldLight: "#FBF6EC",
+    gold: "#C9A84C",
+    goldLight: "#E8D48B",
+    goldDark: "#8C7434",
+    goldBg: "rgba(201,168,76,0.08)",
+    sealRed: "#A63326",
   };
 
-  const serifFont = '"Zen Old Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif';
+  const serifFont = '"Noto Serif JP", "Zen Old Mincho", "Hiragino Mincho ProN", serif';
   const sansFont = '"Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif';
 
   const s = {
     app: {
       fontFamily: sansFont,
-      background: colors.bg,
+      background: "transparent",
       color: colors.textPrimary,
       minHeight: "100vh",
       maxWidth: 480,
@@ -204,7 +211,6 @@ export default function Charoku() {
       position: "relative" as const,
       paddingBottom: 80,
     },
-    // Tab bar
     tabBar: {
       position: "fixed" as const,
       bottom: 0,
@@ -213,9 +219,9 @@ export default function Charoku() {
       width: "100%",
       maxWidth: 480,
       display: "flex",
-      background: "rgba(255,255,255,0.95)",
-      backdropFilter: "blur(12px)",
-      borderTop: `0.5px solid ${colors.border}`,
+      background: "rgba(30,40,32,0.95)",
+      backdropFilter: "blur(16px)",
+      borderTop: `0.5px solid ${colors.borderGold}`,
       zIndex: 100,
       paddingBottom: "env(safe-area-inset-bottom, 0px)",
     },
@@ -227,45 +233,57 @@ export default function Charoku() {
       padding: "10px 0 8px",
       fontSize: 10,
       fontWeight: active ? 500 : 400,
-      color: active ? colors.accent : colors.textTertiary,
+      color: active ? colors.goldLight : "rgba(255,255,255,0.35)",
       background: "none",
       border: "none",
       cursor: "pointer",
-      transition: "color 0.2s",
+      transition: "color 0.3s",
       gap: 3,
+      letterSpacing: "0.05em",
     }),
-    // Cards
     card: {
       background: colors.card,
       borderRadius: 14,
       border: `0.5px solid ${colors.border}`,
       padding: "16px 18px",
       marginBottom: 12,
+      transition: "box-shadow 0.2s",
     },
-    // Buttons
+    cardDark: {
+      background: colors.cardDark,
+      borderRadius: 14,
+      border: `0.5px solid ${colors.borderGold}`,
+      padding: "16px 18px",
+      marginBottom: 12,
+      position: "relative" as const,
+      overflow: "hidden" as const,
+    },
     btn: (variant = "default") => ({
       padding: variant === "sm" ? "6px 14px" : "10px 20px",
       borderRadius: 10,
-      border: variant === "accent" ? "none" : `0.5px solid ${colors.border}`,
-      background: variant === "accent" ? colors.accent : variant === "gold" ? colors.gold : colors.card,
-      color: variant === "accent" || variant === "gold" ? "#fff" : colors.textPrimary,
+      border: variant === "accent" ? "none" : variant === "gold" ? `1px solid ${colors.gold}` : `0.5px solid ${colors.border}`,
+      background: variant === "accent" ? colors.accent : variant === "gold" ? "transparent" : colors.card,
+      color: variant === "accent" ? "#fff" : variant === "gold" ? colors.gold : colors.textPrimary,
       fontSize: variant === "sm" ? 12 : 14,
       fontWeight: 500,
       cursor: "pointer",
-      transition: "all 0.15s",
+      transition: "all 0.2s",
       fontFamily: "inherit",
+      letterSpacing: "0.04em",
     }),
     pill: (active: boolean) => ({
       padding: "6px 14px",
       borderRadius: 20,
-      border: `0.5px solid ${active ? colors.accent : colors.border}`,
-      background: active ? colors.accentLight : "transparent",
-      color: active ? colors.accent : colors.textSecondary,
+      border: `0.5px solid ${active ? colors.gold : colors.border}`,
+      background: active ? colors.goldBg : "transparent",
+      color: active ? colors.gold : colors.textSecondary,
       fontSize: 12,
       fontWeight: active ? 500 : 400,
       cursor: "pointer",
       whiteSpace: "nowrap",
       fontFamily: "inherit",
+      transition: "all 0.2s",
+      letterSpacing: "0.03em",
     }),
     input: {
       width: "100%",
@@ -293,19 +311,18 @@ export default function Charoku() {
       minHeight: 80,
       boxSizing: "border-box" as const,
     },
-    // Section
     section: { padding: "0 20px" },
-    heading: { fontSize: 18, fontWeight: 500, marginBottom: 14, letterSpacing: "0.02em" },
-    subheading: { fontSize: 13, color: colors.textSecondary, marginBottom: 16 },
-    // Modal overlay
+    heading: { fontFamily: serifFont, fontSize: 20, fontWeight: 400, marginBottom: 14, letterSpacing: "0.08em", color: colors.textPrimary },
+    subheading: { fontSize: 13, color: colors.textSecondary, marginBottom: 16, letterSpacing: "0.03em" },
     overlay: {
       position: "fixed" as const,
       top: 0, left: 0, right: 0, bottom: 0,
-      background: "rgba(0,0,0,0.3)",
+      background: "rgba(0,0,0,0.45)",
       zIndex: 200,
       display: "flex",
       alignItems: "flex-end",
       justifyContent: "center",
+      animation: "fadeIn 0.2s ease",
     },
     modal: {
       background: colors.bg,
@@ -315,6 +332,7 @@ export default function Charoku() {
       maxHeight: "90vh",
       overflow: "auto",
       padding: "24px 20px 40px",
+      animation: "emerge 0.3s ease",
     },
   };
 
@@ -354,210 +372,98 @@ export default function Charoku() {
 
     return (
     <div style={{ padding: "0" }}>
-      {/* Hero section */}
+      {/* Hero: Dark artifact card */}
       <div style={{
+        margin: "0 16px 24px",
+        background: colors.cardDark,
+        borderRadius: 16,
         position: "relative",
         overflow: "hidden",
-        background: colors.warm,
-        marginBottom: 0,
+        boxShadow: "12px 18px 36px rgba(0,0,0,0.12), -3px -3px 12px rgba(255,255,255,0.3) inset, 3px 3px 10px rgba(0,0,0,0.3) inset",
+        animation: "emerge 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)",
       }}>
-        {/* Image or fallback */}
-        {!kakejikuError && kakejikuUrl ? (
-          <img
-            src={kakejikuUrl}
-            alt={`${dailyZen.name} 掛軸`}
-            onError={() => setKakejikuError(true)}
-            style={{
-              width: "100%",
-              height: 380,
-              objectFit: "cover",
-              objectPosition: "center top",
-              display: "block",
-              filter: "brightness(0.88) saturate(0.9)",
-            }}
-          />
-        ) : (
-          <div style={{
-            height: 380,
-            background: `linear-gradient(160deg, #2C2C2C 0%, #4a5240 50%, ${colors.accent} 100%)`,
-          }} />
-        )}
+        {/* Noise texture */}
+        <div style={{ position: "absolute", inset: 0, backgroundImage: "var(--card-texture)", opacity: 0.15, pointerEvents: "none", zIndex: 1, borderRadius: 16 }} />
+        {/* Inner gold frame */}
+        <div style={{ position: "absolute", top: 10, bottom: 10, left: 10, right: 10, border: "1px solid rgba(201,168,76,0.12)", pointerEvents: "none", zIndex: 2, borderRadius: 8 }} />
+        {/* Ambient glow */}
+        <div style={{ position: "absolute", top: "30%", left: "50%", transform: "translate(-50%,-50%)", width: "60%", height: "40%", background: "radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%)", pointerEvents: "none", zIndex: 1 }} />
 
-        {/* Dark gradient overlay */}
-        <div style={{
-          position: "absolute",
-          inset: 0,
-          background: "linear-gradient(to bottom, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.15) 40%, rgba(0,0,0,0.72) 100%)",
-        }} />
+        <div style={{ position: "relative", zIndex: 3, padding: "28px 24px 28px", display: "flex", flexDirection: "row", minHeight: 340 }}>
+          {/* Left: type badge + month badge */}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "flex-end", paddingBottom: 4, gap: 10 }}>
+            {/* 禅語/銘 type badge */}
+            <div style={{
+              border: `1px solid ${dailyZen.type === "禅語" ? "rgba(184,169,201,0.5)" : "rgba(201,168,76,0.4)"}`,
+              padding: "5px 3px",
+              writingMode: "vertical-rl",
+              fontSize: 10,
+              fontWeight: 400,
+              letterSpacing: 2,
+              fontFamily: serifFont,
+              color: dailyZen.type === "禅語" ? colors.fuji : colors.goldLight,
+              opacity: 0.85,
+            }}>
+              {dailyZen.type}
+            </div>
+            <div style={{ border: "1px solid rgba(201,168,76,0.35)", padding: "6px 4px", writingMode: "vertical-rl", fontSize: 11, fontWeight: 300, letterSpacing: 3, fontFamily: serifFont }}>
+              <span className="text-foil">{MONTHS[currentMonth].replace("月","")}月 · {MONTH_NAMES[currentMonth]}</span>
+            </div>
+          </div>
 
-        {/* Month badge – top left */}
-        <div style={{
-          position: "absolute",
-          top: 20,
-          left: 20,
-          background: "rgba(255,255,255,0.15)",
-          backdropFilter: "blur(8px)",
-          border: "0.5px solid rgba(255,255,255,0.3)",
-          borderRadius: 20,
-          padding: "5px 14px",
-        }}>
-          <span style={{ fontSize: 11, color: "rgba(255,255,255,0.9)", letterSpacing: "0.18em" }}>
-            {MONTHS[currentMonth].replace("月","")}月 · {MONTH_NAMES[currentMonth]}
-          </span>
-        </div>
-
-        {/* Zen word overlay – bottom of hero */}
-        <div style={{
-          position: "absolute",
-          bottom: 0, left: 0, right: 0,
-          padding: "0 28px 32px",
-          textAlign: "center",
-        }}>
-          {/* Decorative line */}
-          <div style={{
-            width: 40,
-            height: 1,
-            background: "rgba(255,255,255,0.4)",
-            margin: "0 auto 20px",
-          }} />
-          <h1 style={{
-            fontFamily: serifFont,
-            fontSize: 42,
-            fontWeight: 400,
-            letterSpacing: "0.18em",
-            color: "#FFFFFF",
-            lineHeight: 1.3,
-            marginBottom: 10,
-            textShadow: "0 2px 16px rgba(0,0,0,0.4)",
-          }}>
-            {dailyZen.name}
-          </h1>
-          <p style={{
-            fontSize: 12,
-            color: "rgba(255,255,255,0.7)",
-            letterSpacing: "0.15em",
-            marginBottom: 0,
-          }}>
-            {dailyZen.reading}
-          </p>
+          {/* Right: zen title + reading */}
+          <div style={{ flex: 1, display: "flex", flexDirection: "row", justifyContent: "flex-end", alignItems: "flex-start", gap: 10, paddingTop: 0 }}>
+            {!kakejikuError && kakejikuUrl && (
+              <img src={kakejikuUrl} alt={`${dailyZen.name} 掛軸`} onError={() => setKakejikuError(true)}
+                style={{ width: 70, height: 110, objectFit: "cover", objectPosition: "center top", borderRadius: 4, opacity: 0.4, filter: "brightness(0.85) saturate(0.7)", border: "1px solid rgba(201,168,76,0.1)", marginTop: 8, alignSelf: "flex-end" }} />
+            )}
+            {/* Reading */}
+            <p style={{ fontSize: 11, color: colors.goldLight, opacity: 0.45, letterSpacing: "0.1em", fontFamily: serifFont, fontWeight: 300, writingMode: "vertical-rl", marginTop: 4, lineHeight: 1 }}>
+              {dailyZen.reading}
+            </p>
+            {/* Decorative line */}
+            <div style={{ width: 1, alignSelf: "stretch", background: "linear-gradient(180deg, rgba(201,168,76,0.35), rgba(201,168,76,0.08), transparent)", marginTop: 2 }} />
+            {/* Main zen title */}
+            <h1 className="text-foil" style={{ fontFamily: serifFont, fontSize: 48, fontWeight: 900, letterSpacing: "0.25em", lineHeight: 1.6, margin: 0, filter: "drop-shadow(0 1px 1px rgba(0,0,0,0.5))", writingMode: "vertical-rl", textOrientation: "upright" as any }}>
+              {dailyZen.name}
+            </h1>
+          </div>
         </div>
       </div>
 
-      {/* Meaning card */}
-      <div style={{
-        margin: "-1px 20px 0",
-        background: colors.card,
-        borderRadius: "0 0 20px 20px",
-        border: `0.5px solid ${colors.border}`,
-        borderTop: "none",
-        padding: "22px 24px 24px",
-        marginBottom: 24,
-      }}>
-        <p style={{
-          fontFamily: serifFont,
-          fontSize: 14,
-          color: colors.sumi,
-          lineHeight: 2.0,
-          textAlign: "center",
-          marginBottom: 14,
-        }}>
+      {/* Meaning section */}
+      <div style={{ margin: "0 20px 24px", background: colors.card, borderRadius: 14, border: `0.5px solid ${colors.border}`, padding: "22px 24px 24px" }}>
+        <p style={{ fontFamily: serifFont, fontSize: 14, color: colors.sumi, lineHeight: 2.0, textAlign: "center", marginBottom: 14 }}>
           {dailyZen.meaning}
         </p>
-        <p style={{
-          fontSize: 11,
-          color: colors.textTertiary,
-          lineHeight: 1.7,
-          textAlign: "center",
-          fontStyle: "italic",
-          borderTop: `0.5px solid ${colors.border}`,
-          paddingTop: 14,
-        }}>
+        <p style={{ fontSize: 11, color: colors.textTertiary, lineHeight: 1.7, textAlign: "center", fontStyle: "italic", borderTop: `0.5px solid ${colors.border}`, paddingTop: 14, letterSpacing: "0.04em" }}>
           {SEASONAL_GREETINGS[currentMonth]}
         </p>
       </div>
 
-      {/* Quick actions */}
-      <div style={{ display: "flex", gap: 12, marginBottom: 28, padding: "0 20px" }}>
-        <button
-          onClick={() => { setSelectedZen(dailyZen); fetchAiExplanation(dailyZen); }}
-          style={{
-            ...s.card,
-            flex: 1,
-            cursor: "pointer",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 8,
-            border: `0.5px solid ${colors.border}`,
-            padding: "18px 12px",
-            marginBottom: 0,
-          }}
-        >
-          <Icon type="sparkle" size={20} color={colors.accent} />
-          <span style={{ fontSize: 12, color: colors.accent, fontWeight: 500 }}>AIで深掘り</span>
-        </button>
-        <button
-          onClick={() => setTab("zen")}
-          style={{
-            ...s.card,
-            flex: 1,
-            cursor: "pointer",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 8,
-            border: `0.5px solid ${colors.border}`,
-            padding: "18px 12px",
-            marginBottom: 0,
-          }}
-        >
-          <Icon type="book" size={20} color={colors.fuji} />
-          <span style={{ fontSize: 12, color: colors.fuji, fontWeight: 500 }}>禅語を探す</span>
-        </button>
-        <button
-          onClick={() => setTab("video")}
-          style={{
-            ...s.card,
-            flex: 1,
-            cursor: "pointer",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 8,
-            border: `0.5px solid ${colors.border}`,
-            padding: "18px 12px",
-            marginBottom: 0,
-          }}
-        >
-          <Icon type="video" size={20} color={colors.sumi} />
-          <span style={{ fontSize: 12, color: colors.sumi, fontWeight: 500 }}>動画を見る</span>
-        </button>
+      {/* Quick actions - dark card style */}
+      <div style={{ display: "flex", gap: 10, marginBottom: 28, padding: "0 20px" }}>
+        {[
+          { label: "AIで深掘り", icon: "sparkle", action: () => { setSelectedZen(dailyZen); fetchAiExplanation(dailyZen); } },
+          { label: "禅語を探す", icon: "book", action: () => setTab("zen") },
+          { label: "動画を見る", icon: "video", action: () => setTab("video") },
+        ].map(item => (
+          <button key={item.label} onClick={item.action}
+            style={{ ...s.cardDark, flex: 1, cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: "18px 10px", marginBottom: 0, border: `0.5px solid ${colors.borderGold}` }}>
+            <Icon type={item.icon} size={20} color={colors.goldLight} />
+            <span className="text-foil" style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.05em" }}>{item.label}</span>
+          </button>
+        ))}
       </div>
 
       {/* Favorites preview */}
       {favoriteZenItems.length > 0 && (
         <div style={{ marginBottom: 24, padding: "0 20px" }}>
-          <h3 style={{ fontSize: 14, fontWeight: 500, marginBottom: 12, color: colors.textSecondary }}>
-            お気に入りの禅語・銘
-          </h3>
+          <h3 style={{ fontFamily: serifFont, fontSize: 14, fontWeight: 400, marginBottom: 12, color: colors.textSecondary, letterSpacing: "0.06em" }}>お気に入りの禅語・銘</h3>
           <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 4 }}>
             {favoriteZenItems.slice(0, 5).map(z => (
-              <button
-                key={z.name}
-                onClick={() => { setSelectedZen(z); setTab("zen"); }}
-                style={{
-                  padding: "10px 16px",
-                  borderRadius: 10,
-                  background: colors.warm,
-                  border: "none",
-                  fontSize: 14,
-                  color: colors.textPrimary,
-                  whiteSpace: "nowrap",
-                  cursor: "pointer",
-                  fontFamily: "inherit",
-                  letterSpacing: "0.05em",
-                }}
-              >
+              <button key={z.name} onClick={() => { setSelectedZen(z); setTab("zen"); }}
+                style={{ padding: "10px 16px", borderRadius: 10, background: colors.cardDark, border: `0.5px solid ${colors.borderGold}`, fontSize: 14, whiteSpace: "nowrap", cursor: "pointer", fontFamily: serifFont, letterSpacing: "0.08em", color: colors.goldLight }}>
                 {z.name}
               </button>
             ))}
@@ -568,23 +474,16 @@ export default function Charoku() {
       {/* Recent videos */}
       {videos.length > 0 && (
         <div style={{ padding: "0 20px" }}>
-          <h3 style={{ fontSize: 14, fontWeight: 500, marginBottom: 12, color: colors.textSecondary }}>
-            最近の動画
-          </h3>
+          <h3 style={{ fontFamily: serifFont, fontSize: 14, fontWeight: 400, marginBottom: 12, color: colors.textSecondary, letterSpacing: "0.06em" }}>最近の動画</h3>
           {videos.slice(0, 3).map(v => (
             <div key={v.id} onClick={() => { setVideoDetail(v); setTab("video"); }}
               style={{ ...s.card, cursor: "pointer", display: "flex", gap: 12, alignItems: "center" }}>
               {getYouTubeId(v.url) && (
-                <img
-                  src={`https://img.youtube.com/vi/${getYouTubeId(v.url)}/mqdefault.jpg`}
-                  style={{ width: 96, height: 54, borderRadius: 8, objectFit: "cover" }}
-                  alt=""
-                />
+                <img src={`https://img.youtube.com/vi/${getYouTubeId(v.url)}/mqdefault.jpg`}
+                  style={{ width: 96, height: 54, borderRadius: 8, objectFit: "cover" }} alt="" />
               )}
               <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{ fontSize: 13, fontWeight: 500, marginBottom: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                  {v.title}
-                </p>
+                <p style={{ fontSize: 13, fontWeight: 500, marginBottom: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{v.title}</p>
                 <p style={{ fontSize: 11, color: colors.textTertiary }}>{v.category}</p>
               </div>
             </div>
@@ -594,6 +493,7 @@ export default function Charoku() {
     </div>
     );
   };
+
 
   // ============================================================
   // VIDEO SCREEN
@@ -730,83 +630,107 @@ export default function Charoku() {
   };
 
   const VideoScreen = () => (
-    <div style={s.section}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-        <h2 style={s.heading}>YouTube動画</h2>
-        <button onClick={() => setVideoModal(true)} style={{ ...s.btn("accent"), display: "flex", alignItems: "center", gap: 4, padding: "8px 14px" }}>
-          <Icon type="plus" size={16} color="#fff" />
-          <span>追加</span>
-        </button>
-      </div>
-
-      {/* Search */}
-      <div style={{ position: "relative", marginBottom: 14 }}>
-        <div style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }}>
-          <Icon type="search" size={16} color={colors.textTertiary} />
+    <div style={{ padding: "0" }}>
+      {/* Dark page header */}
+      <div style={{
+        margin: "0 16px 20px",
+        background: colors.cardDark,
+        borderRadius: 16,
+        position: "relative",
+        overflow: "hidden",
+        padding: "20px 22px 18px",
+        boxShadow: "8px 12px 24px rgba(0,0,0,0.1)",
+      }}>
+        <div style={{ position: "absolute", inset: 0, backgroundImage: "var(--card-texture)", opacity: 0.15, pointerEvents: "none", zIndex: 1, borderRadius: 16 }} />
+        <div style={{ position: "absolute", top: 8, bottom: 8, left: 8, right: 8, border: "1px solid rgba(201,168,76,0.12)", pointerEvents: "none", zIndex: 2, borderRadius: 10 }} />
+        <div style={{ position: "relative", zIndex: 3, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <h2 className="text-foil" style={{ fontFamily: serifFont, fontSize: 22, fontWeight: 400, letterSpacing: "0.12em", margin: 0 }}>
+            YouTube動画
+          </h2>
+          <button onClick={() => setVideoModal(true)} style={{
+            background: "none", border: `1px solid rgba(201,168,76,0.4)`, borderRadius: 8,
+            padding: "6px 14px", color: colors.goldLight, fontSize: 12, fontWeight: 500, cursor: "pointer",
+            display: "flex", alignItems: "center", gap: 4, letterSpacing: "0.04em", fontFamily: "inherit",
+          }}>
+            <Icon type="plus" size={14} color={colors.goldLight} />
+            追加
+          </button>
         </div>
-        <input
-          style={{ ...s.input, paddingLeft: 36 }}
-          placeholder="動画を検索..."
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-        />
+        <p style={{ position: "relative", zIndex: 3, fontSize: 11, color: "rgba(201,168,76,0.35)", marginTop: 8, letterSpacing: "0.06em", fontFamily: serifFont }}>
+          お稽古の参考動画を管理しましょう
+        </p>
       </div>
 
-      {/* Category filter */}
-      <div style={{ display: "flex", gap: 8, overflowX: "auto", marginBottom: 18, paddingBottom: 4 }}>
-        <button onClick={() => setVideoCatFilter("all")} style={s.pill(videoCatFilter === "all")}>すべて</button>
-        {CATEGORIES.map(c => (
-          <button key={c} onClick={() => setVideoCatFilter(c)} style={s.pill(videoCatFilter === c)}>{c}</button>
-        ))}
-      </div>
-
-      {/* Video list */}
-      {filteredVideos.length === 0 ? (
-        <div style={{ textAlign: "center", padding: "48px 0", color: colors.textTertiary }}>
-          <Icon type="video" size={32} color={colors.border} />
-          <p style={{ marginTop: 12, fontSize: 13 }}>
-            {videos.length === 0 ? "まだ動画がありません" : "該当する動画がありません"}
-          </p>
-          {videos.length === 0 && (
-            <button onClick={() => setVideoModal(true)} style={{ ...s.btn("accent"), marginTop: 16 }}>
-              最初の動画を追加
-            </button>
-          )}
-        </div>
-      ) : (
-        filteredVideos.map(v => (
-          <div key={v.id} onClick={() => setVideoDetail(v)}
-            style={{ ...s.card, cursor: "pointer", display: "flex", gap: 12, alignItems: "center" }}>
-            {getYouTubeId(v.url) ? (
-              <img
-                src={`https://img.youtube.com/vi/${getYouTubeId(v.url)}/mqdefault.jpg`}
-                style={{ width: 110, height: 62, borderRadius: 8, objectFit: "cover", flexShrink: 0 }}
-                alt=""
-              />
-            ) : (
-              <div style={{ width: 110, height: 62, borderRadius: 8, background: colors.warm, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <Icon type="video" size={24} color={colors.textTertiary} />
-              </div>
-            )}
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <p style={{ fontSize: 14, fontWeight: 500, marginBottom: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                {v.title}
-              </p>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ fontSize: 11, color: colors.accent, background: colors.accentLight, padding: "2px 8px", borderRadius: 6 }}>
-                  {v.category}
-                </span>
-                {v.favorite && <Icon type="starFill" size={12} color={colors.gold} />}
-              </div>
-              {v.memo && (
-                <p style={{ fontSize: 11, color: colors.textTertiary, marginTop: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                  {v.memo}
-                </p>
-              )}
-            </div>
+      <div style={{ padding: "0 20px" }}>
+        {/* Search */}
+        <div style={{ position: "relative", marginBottom: 14 }}>
+          <div style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }}>
+            <Icon type="search" size={16} color={colors.textTertiary} />
           </div>
-        ))
-      )}
+          <input
+            style={{ ...s.input, paddingLeft: 36 }}
+            placeholder="動画を検索..."
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+          />
+        </div>
+
+        {/* Category filter */}
+        <div style={{ display: "flex", gap: 8, overflowX: "auto", marginBottom: 18, paddingBottom: 4 }}>
+          <button onClick={() => setVideoCatFilter("all")} style={s.pill(videoCatFilter === "all")}>すべて</button>
+          {CATEGORIES.map(c => (
+            <button key={c} onClick={() => setVideoCatFilter(c)} style={s.pill(videoCatFilter === c)}>{c}</button>
+          ))}
+        </div>
+
+        {/* Video list */}
+        {filteredVideos.length === 0 ? (
+          <div style={{ textAlign: "center", padding: "48px 0", color: colors.textTertiary }}>
+            <Icon type="video" size={32} color={colors.border} />
+            <p style={{ marginTop: 12, fontSize: 13 }}>
+              {videos.length === 0 ? "まだ動画がありません" : "該当する動画がありません"}
+            </p>
+            {videos.length === 0 && (
+              <button onClick={() => setVideoModal(true)} style={{ ...s.btn("accent"), marginTop: 16 }}>
+                最初の動画を追加
+              </button>
+            )}
+          </div>
+        ) : (
+          filteredVideos.map(v => (
+            <div key={v.id} onClick={() => setVideoDetail(v)}
+              style={{ ...s.card, cursor: "pointer", display: "flex", gap: 12, alignItems: "center" }}>
+              {getYouTubeId(v.url) ? (
+                <img
+                  src={`https://img.youtube.com/vi/${getYouTubeId(v.url)}/mqdefault.jpg`}
+                  style={{ width: 110, height: 62, borderRadius: 8, objectFit: "cover", flexShrink: 0 }}
+                  alt=""
+                />
+              ) : (
+                <div style={{ width: 110, height: 62, borderRadius: 8, background: colors.warm, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Icon type="video" size={24} color={colors.textTertiary} />
+                </div>
+              )}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{ fontSize: 14, fontWeight: 500, marginBottom: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  {v.title}
+                </p>
+                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <span style={{ fontSize: 11, color: colors.accent, background: colors.accentLight, padding: "2px 8px", borderRadius: 6 }}>
+                    {v.category}
+                  </span>
+                  {v.favorite && <Icon type="starFill" size={12} color={colors.gold} />}
+                </div>
+                {v.memo && (
+                  <p style={{ fontSize: 11, color: colors.textTertiary, marginTop: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {v.memo}
+                  </p>
+                )}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 
@@ -1090,16 +1014,38 @@ export default function Charoku() {
   };
 
   const ZenScreen = () => (
-    <div style={s.section}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-        <h2 style={s.heading}>禅語・茶杓の銘</h2>
-        <button onClick={() => { setEditZenTarget(null); setAddZenModal(true); }} style={{ ...s.btn("accent"), display: "flex", alignItems: "center", gap: 4, padding: "8px 14px" }}>
-          <Icon type="plus" size={16} color="#fff" />
-          <span>追加</span>
-        </button>
+    <div style={{ padding: "0" }}>
+      {/* Dark page header */}
+      <div style={{
+        margin: "0 16px 20px",
+        background: colors.cardDark,
+        borderRadius: 16,
+        position: "relative",
+        overflow: "hidden",
+        padding: "20px 22px 18px",
+        boxShadow: "8px 12px 24px rgba(0,0,0,0.1)",
+      }}>
+        <div style={{ position: "absolute", inset: 0, backgroundImage: "var(--card-texture)", opacity: 0.15, pointerEvents: "none", zIndex: 1, borderRadius: 16 }} />
+        <div style={{ position: "absolute", top: 8, bottom: 8, left: 8, right: 8, border: "1px solid rgba(201,168,76,0.12)", pointerEvents: "none", zIndex: 2, borderRadius: 10 }} />
+        <div style={{ position: "relative", zIndex: 3, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <h2 className="text-foil" style={{ fontFamily: serifFont, fontSize: 22, fontWeight: 400, letterSpacing: "0.12em", margin: 0 }}>
+            禅語・茶杓の銘
+          </h2>
+          <button onClick={() => { setEditZenTarget(null); setAddZenModal(true); }} style={{
+            background: "none", border: `1px solid rgba(201,168,76,0.4)`, borderRadius: 8,
+            padding: "6px 14px", color: colors.goldLight, fontSize: 12, fontWeight: 500, cursor: "pointer",
+            display: "flex", alignItems: "center", gap: 4, letterSpacing: "0.04em", fontFamily: "inherit",
+          }}>
+            <Icon type="plus" size={14} color={colors.goldLight} />
+            追加
+          </button>
+        </div>
+        <p style={{ position: "relative", zIndex: 3, fontSize: 11, color: "rgba(201,168,76,0.35)", marginTop: 8, letterSpacing: "0.06em", fontFamily: serifFont }}>
+          季節の言葉を学び、お稽古に活かしましょう
+        </p>
       </div>
-      <p style={s.subheading}>季節の言葉を学び、お稽古に活かしましょう</p>
 
+      <div style={{ padding: "0 20px" }}>
       {/* Month selector */}
       <div style={{ display: "flex", gap: 6, overflowX: "auto", marginBottom: 14, paddingBottom: 4 }}>
         {MONTHS.map((m, i) => (
@@ -1191,6 +1137,7 @@ export default function Charoku() {
           );
         })
       )}
+      </div>
     </div>
   );
 
@@ -1198,61 +1145,83 @@ export default function Charoku() {
   // FAVORITES SCREEN
   // ============================================================
   const FavoritesScreen = () => {
-    const favVideos = videos.filter(v => v.favorite);
+    const favVideos = videos.filter((v: VideoBookmark) => v.favorite);
     return (
-      <div style={s.section}>
-        <h2 style={s.heading}>お気に入り</h2>
+      <div style={{ padding: "0" }}>
+        {/* Dark page header */}
+        <div style={{
+          margin: "0 16px 20px",
+          background: colors.cardDark,
+          borderRadius: 16,
+          position: "relative",
+          overflow: "hidden",
+          padding: "20px 22px 18px",
+          boxShadow: "8px 12px 24px rgba(0,0,0,0.1)",
+        }}>
+          <div style={{ position: "absolute", inset: 0, backgroundImage: "var(--card-texture)", opacity: 0.15, pointerEvents: "none", zIndex: 1, borderRadius: 16 }} />
+          <div style={{ position: "absolute", top: 8, bottom: 8, left: 8, right: 8, border: "1px solid rgba(201,168,76,0.12)", pointerEvents: "none", zIndex: 2, borderRadius: 10 }} />
+          <div style={{ position: "relative", zIndex: 3 }}>
+            <h2 className="text-foil" style={{ fontFamily: serifFont, fontSize: 22, fontWeight: 400, letterSpacing: "0.12em", margin: 0 }}>
+              お気に入り
+            </h2>
+          </div>
+          <p style={{ position: "relative", zIndex: 3, fontSize: 11, color: "rgba(201,168,76,0.35)", marginTop: 8, letterSpacing: "0.06em", fontFamily: serifFont }}>
+            大切な禅語・銘と動画を一覧で
+          </p>
+        </div>
 
-        {/* Zen favorites */}
-        {favoriteZenItems.length > 0 && (
-          <div style={{ marginBottom: 28 }}>
-            <h3 style={{ fontSize: 14, fontWeight: 500, color: colors.textSecondary, marginBottom: 12 }}>禅語・銘</h3>
-            {favoriteZenItems.map(z => (
-              <div key={z.name} onClick={() => { setSelectedZen(z); }}
-                style={{ ...s.card, cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
-                    <span style={{ fontFamily: serifFont, fontSize: 17, letterSpacing: "0.08em" }}>{z.name}</span>
-                    <span style={{ fontSize: 10, color: colors.fuji, background: colors.fujiLight, padding: "2px 8px", borderRadius: 6 }}>{z.type}</span>
+        <div style={{ padding: "0 20px" }}>
+          {/* Zen favorites */}
+          {favoriteZenItems.length > 0 && (
+            <div style={{ marginBottom: 28 }}>
+              <h3 style={{ fontSize: 14, fontWeight: 500, color: colors.textSecondary, marginBottom: 12 }}>禅語・銘</h3>
+              {favoriteZenItems.map(z => (
+                <div key={z.name} onClick={() => { setSelectedZen(z); }}
+                  style={{ ...s.card, cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
+                      <span style={{ fontFamily: serifFont, fontSize: 17, letterSpacing: "0.08em" }}>{z.name}</span>
+                      <span style={{ fontSize: 10, color: colors.fuji, background: colors.fujiLight, padding: "2px 8px", borderRadius: 6 }}>{z.type}</span>
+                    </div>
+                    <p style={{ fontSize: 12, color: colors.textTertiary }}>{z.reading}</p>
                   </div>
-                  <p style={{ fontSize: 12, color: colors.textTertiary }}>{z.reading}</p>
+                  <button onClick={e => { e.stopPropagation(); toggleZenFav(z.name); }}
+                    style={{ background: "none", border: "none", cursor: "pointer", padding: 8 }}>
+                    <Icon type="heartFill" size={20} color="#D4537E" />
+                  </button>
                 </div>
-                <button onClick={e => { e.stopPropagation(); toggleZenFav(z.name); }}
-                  style={{ background: "none", border: "none", cursor: "pointer", padding: 8 }}>
-                  <Icon type="heartFill" size={20} color="#D4537E" />
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
 
-        {/* Video favorites */}
-        {favVideos.length > 0 && (
-          <div style={{ marginBottom: 28 }}>
-            <h3 style={{ fontSize: 14, fontWeight: 500, color: colors.textSecondary, marginBottom: 12 }}>動画</h3>
-            {favVideos.map(v => (
-              <div key={v.id} onClick={() => { setVideoDetail(v); setTab("video"); }}
-                style={{ ...s.card, cursor: "pointer", display: "flex", gap: 12, alignItems: "center" }}>
-                {getYouTubeId(v.url) && (
-                  <img src={`https://img.youtube.com/vi/${getYouTubeId(v.url)}/mqdefault.jpg`}
-                    style={{ width: 96, height: 54, borderRadius: 8, objectFit: "cover" }} alt="" />
-                )}
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <p style={{ fontSize: 13, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{v.title}</p>
-                  <p style={{ fontSize: 11, color: colors.textTertiary }}>{v.category}</p>
+          {/* Video favorites */}
+          {favVideos.length > 0 && (
+            <div style={{ marginBottom: 28 }}>
+              <h3 style={{ fontSize: 14, fontWeight: 500, color: colors.textSecondary, marginBottom: 12 }}>動画</h3>
+              {favVideos.map((v: VideoBookmark) => (
+                <div key={v.id} onClick={() => { setVideoDetail(v); setTab("video"); }}
+                  style={{ ...s.card, cursor: "pointer", display: "flex", gap: 12, alignItems: "center" }}>
+                  {getYouTubeId(v.url) && (
+                    <img src={`https://img.youtube.com/vi/${getYouTubeId(v.url)}/mqdefault.jpg`}
+                      style={{ width: 96, height: 54, borderRadius: 8, objectFit: "cover" }} alt="" />
+                  )}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: 13, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{v.title}</p>
+                    <p style={{ fontSize: 11, color: colors.textTertiary }}>{v.category}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
 
-        {favoriteZenItems.length === 0 && favVideos.length === 0 && (
-          <div style={{ textAlign: "center", padding: "48px 0", color: colors.textTertiary }}>
-            <Icon type="heart" size={32} color={colors.border} />
-            <p style={{ marginTop: 12, fontSize: 13 }}>お気に入りはまだありません</p>
-            <p style={{ fontSize: 12, marginTop: 4 }}>禅語や動画のハートをタップして追加しましょう</p>
-          </div>
-        )}
+          {favoriteZenItems.length === 0 && favVideos.length === 0 && (
+            <div style={{ textAlign: "center", padding: "48px 0", color: colors.textTertiary }}>
+              <Icon type="heart" size={32} color={colors.border} />
+              <p style={{ marginTop: 12, fontSize: 13 }}>お気に入りはまだありません</p>
+              <p style={{ fontSize: 12, marginTop: 4 }}>禅語や動画のハートをタップして追加しましょう</p>
+            </div>
+          )}
+        </div>
       </div>
     );
   };
@@ -1271,14 +1240,15 @@ export default function Charoku() {
         borderBottom: tab !== "home" ? `0.5px solid ${colors.border}` : "none",
       }}>
         <h1 style={{
-          fontSize: 20,
+          fontFamily: serifFont,
+          fontSize: 22,
           fontWeight: 400,
-          letterSpacing: "0.15em",
+          letterSpacing: "0.18em",
           color: colors.textPrimary,
         }}>
-          茶録
+          茶録初心
         </h1>
-        <span style={{ fontSize: 11, color: colors.textTertiary, letterSpacing: "0.05em" }}>Charoku</span>
+        <span style={{ fontSize: 10, color: colors.textTertiary, letterSpacing: "0.12em", fontFamily: "monospace" }}>CHAROKU</span>
       </div>
 
       {/* Content */}
@@ -1304,7 +1274,7 @@ export default function Charoku() {
           { id: "fav", label: "お気に入り", icon: "heart" },
         ].map(t => (
           <button key={t.id} onClick={() => setTab(t.id)} style={s.tabItem(tab === t.id)}>
-            <Icon type={t.icon} size={22} color={tab === t.id ? colors.accent : colors.textTertiary} />
+            <Icon type={t.icon} size={22} color={tab === t.id ? colors.goldLight : "rgba(255,255,255,0.35)"} />
             {t.label}
           </button>
         ))}
