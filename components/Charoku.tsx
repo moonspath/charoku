@@ -6,25 +6,25 @@ import { MONTHS, MONTH_NAMES, CATEGORIES, SEASONAL_GREETINGS, ZENGO_DATA, ZENGO_
 
 export default function Charoku() {
   const [tab, setTab] = useState("home");
-  const [videos, setVideos] = useState(() => {
+  const [videos, setVideos] = useState<VideoBookmark[]>(() => {
     try { return JSON.parse(localStorage.getItem("charoku_videos")||"[]"); } catch { return []; }
   });
-  const [zenFavorites, setZenFavorites] = useState(() => {
+  const [zenFavorites, setZenFavorites] = useState<string[]>(() => {
     try { return JSON.parse(localStorage.getItem("charoku_zen_fav")||"[]"); } catch { return []; }
   });
-  const [customZen, setCustomZen] = useState(() => {
+  const [customZen, setCustomZen] = useState<ZenPhrase[]>(() => {
     try { return JSON.parse(localStorage.getItem("charoku_custom_zen")||"[]"); } catch { return []; }
   });
   const [aiResult, setAiResult] = useState<AiExplanation | null>(null);
   const [aiLoading, setAiLoading] = useState(false);
-  const [selectedZen, setSelectedZen] = useState(null);
+  const [selectedZen, setSelectedZen] = useState<ZenPhrase | null>(null);
   const [zenMonth, setZenMonth] = useState(() => new Date().getMonth());
   const [zenTypeFilter, setZenTypeFilter] = useState("all");
   const [zenSourceFilter, setZenSourceFilter] = useState("all"); // "all" | "builtin" | "custom"
   const [addZenModal, setAddZenModal] = useState(false);
-  const [editZenTarget, setEditZenTarget] = useState(null);
+  const [editZenTarget, setEditZenTarget] = useState<ZenPhrase | null>(null);
   const [videoModal, setVideoModal] = useState(false);
-  const [videoDetail, setVideoDetail] = useState(null);
+  const [videoDetail, setVideoDetail] = useState<VideoBookmark | null>(null);
   const [videoCatFilter, setVideoCatFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -75,68 +75,68 @@ export default function Charoku() {
   // ============================================================
   // Video helpers
   // ============================================================
-  const getYouTubeId = (url) => {
+  const getYouTubeId = (url: string) => {
     const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/);
     return match ? match[1] : null;
   };
 
-  const addVideo = (videoData) => {
-    setVideos(prev => [{ ...videoData, id: Date.now(), favorite: false, createdAt: new Date().toISOString() }, ...prev]);
+  const addVideo = (videoData: Omit<VideoBookmark, "id" | "favorite" | "createdAt">) => {
+    setVideos((prev: VideoBookmark[]) => [{ ...videoData, id: Date.now(), favorite: false, createdAt: new Date().toISOString() }, ...prev]);
     setVideoModal(false);
   };
 
-  const toggleVideoFav = (id) => {
-    setVideos(prev => prev.map(v => v.id === id ? { ...v, favorite: !v.favorite } : v));
+  const toggleVideoFav = (id: number) => {
+    setVideos((prev: VideoBookmark[]) => prev.map((v: VideoBookmark) => v.id === id ? { ...v, favorite: !v.favorite } : v));
   };
 
-  const deleteVideo = (id) => {
-    setVideos(prev => prev.filter(v => v.id !== id));
+  const deleteVideo = (id: number) => {
+    setVideos((prev: VideoBookmark[]) => prev.filter((v: VideoBookmark) => v.id !== id));
     setVideoDetail(null);
   };
 
-  const updateVideoMemo = (id, memo) => {
-    setVideos(prev => prev.map(v => v.id === id ? { ...v, memo } : v));
+  const updateVideoMemo = (id: number, memo: string) => {
+    setVideos((prev: VideoBookmark[]) => prev.map((v: VideoBookmark) => v.id === id ? { ...v, memo } : v));
   };
 
-  const toggleZenFav = (name) => {
-    setZenFavorites(prev =>
-      prev.includes(name) ? prev.filter(n => n !== name) : [...prev, name]
+  const toggleZenFav = (name: string) => {
+    setZenFavorites((prev: string[]) =>
+      prev.includes(name) ? prev.filter((n: string) => n !== name) : [...prev, name]
     );
   };
 
   // Custom zen CRUD
-  const addCustomZen = (zenData) => {
-    setCustomZen(prev => [{ ...zenData, id: Date.now(), custom: true, createdAt: new Date().toISOString(), usedDates: [] }, ...prev]);
+  const addCustomZen = (zenData: Omit<ZenPhrase, "id" | "custom" | "createdAt" | "usedDates">) => {
+    setCustomZen((prev: ZenPhrase[]) => [{ ...zenData, id: Date.now(), custom: true, createdAt: new Date().toISOString(), usedDates: [] }, ...prev]);
     setAddZenModal(false);
   };
 
-  const updateCustomZen = (id, updates) => {
-    setCustomZen(prev => prev.map(z => z.id === id ? { ...z, ...updates } : z));
+  const updateCustomZen = (id: number, updates: Partial<ZenPhrase>) => {
+    setCustomZen((prev: ZenPhrase[]) => prev.map((z: ZenPhrase) => z.id === id ? { ...z, ...updates } : z));
     setEditZenTarget(null);
   };
 
-  const deleteCustomZen = (id) => {
-    setCustomZen(prev => prev.filter(z => z.id !== id));
+  const deleteCustomZen = (id: number) => {
+    setCustomZen((prev: ZenPhrase[]) => prev.filter((z: ZenPhrase) => z.id !== id));
     setSelectedZen(null);
   };
 
-  const addUsedDate = (id, date, note) => {
-    setCustomZen(prev => prev.map(z => z.id === id
+  const addUsedDate = (id: number, date: string, note: string) => {
+    setCustomZen((prev: ZenPhrase[]) => prev.map((z: ZenPhrase) => z.id === id
       ? { ...z, usedDates: [...(z.usedDates || []), { date, note }] }
       : z
     ));
   };
 
   // For built-in zen: track usage via a separate state stored alongside favorites
-  const [zenUsage, setZenUsage] = useState(() => {
+  const [zenUsage, setZenUsage] = useState<Record<string, UsageRecord[]>>(() => {
     try { return JSON.parse(localStorage.getItem("charoku_zen_usage")||"{}"); } catch { return {}; }
   });
   useEffect(() => {
     try { localStorage.setItem("charoku_zen_usage", JSON.stringify(zenUsage)); } catch {}
   }, [zenUsage]);
 
-  const addBuiltinUsedDate = (name, date, note) => {
-    setZenUsage(prev => ({
+  const addBuiltinUsedDate = (name: string, date: string, note: string) => {
+    setZenUsage((prev: Record<string, UsageRecord[]>) => ({
       ...prev,
       [name]: [...(prev[name] || []), { date, note }]
     }));
@@ -161,7 +161,7 @@ export default function Charoku() {
   const favoriteZenItems = allZenData.filter(z => zenFavorites.includes(z.name));
 
   // Filter videos
-  const filteredVideos = videos.filter(v => {
+  const filteredVideos = videos.filter((v: VideoBookmark) => {
     if (videoCatFilter !== "all" && v.category !== videoCatFilter) return false;
     if (searchQuery && !v.title.toLowerCase().includes(searchQuery.toLowerCase()) && !v.memo?.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     return true;
@@ -201,12 +201,12 @@ export default function Charoku() {
       minHeight: "100vh",
       maxWidth: 480,
       margin: "0 auto",
-      position: "relative",
+      position: "relative" as const,
       paddingBottom: 80,
     },
     // Tab bar
     tabBar: {
-      position: "fixed",
+      position: "fixed" as const,
       bottom: 0,
       left: "50%",
       transform: "translateX(-50%)",
@@ -219,10 +219,10 @@ export default function Charoku() {
       zIndex: 100,
       paddingBottom: "env(safe-area-inset-bottom, 0px)",
     },
-    tabItem: (active) => ({
+    tabItem: (active: boolean) => ({
       flex: 1,
       display: "flex",
-      flexDirection: "column",
+      flexDirection: "column" as const,
       alignItems: "center",
       padding: "10px 0 8px",
       fontSize: 10,
@@ -255,7 +255,7 @@ export default function Charoku() {
       transition: "all 0.15s",
       fontFamily: "inherit",
     }),
-    pill: (active) => ({
+    pill: (active: boolean) => ({
       padding: "6px 14px",
       borderRadius: 20,
       border: `0.5px solid ${active ? colors.accent : colors.border}`,
@@ -277,7 +277,7 @@ export default function Charoku() {
       background: colors.card,
       color: colors.textPrimary,
       outline: "none",
-      boxSizing: "border-box",
+      boxSizing: "border-box" as const,
     },
     textarea: {
       width: "100%",
@@ -289,9 +289,9 @@ export default function Charoku() {
       background: colors.card,
       color: colors.textPrimary,
       outline: "none",
-      resize: "vertical",
+      resize: "vertical" as const,
       minHeight: 80,
-      boxSizing: "border-box",
+      boxSizing: "border-box" as const,
     },
     // Section
     section: { padding: "0 20px" },
@@ -299,7 +299,7 @@ export default function Charoku() {
     subheading: { fontSize: 13, color: colors.textSecondary, marginBottom: 16 },
     // Modal overlay
     overlay: {
-      position: "fixed",
+      position: "fixed" as const,
       top: 0, left: 0, right: 0, bottom: 0,
       background: "rgba(0,0,0,0.3)",
       zIndex: 200,
@@ -321,7 +321,7 @@ export default function Charoku() {
   // ============================================================
   // ICON COMPONENTS (simple SVG)
   // ============================================================
-  const Icon = ({ type, size = 22, color = "currentColor" }) => {
+  const Icon = ({ type, size = 22, color = "currentColor" }: { type: string; size?: number; color?: string }) => {
     const icons = {
       home: <><circle cx="12" cy="12" r="0" fill="none"/><path d="M3 12l9-8 9 8" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M5 10v8a1 1 0 001 1h3v-5h6v5h3a1 1 0 001-1v-8" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></>,
       video: <><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke={color} strokeWidth="1.5"/><path d="M10 9l5 3-5 3V9z" fill={color}/></>,
@@ -340,7 +340,7 @@ export default function Charoku() {
       calendar: <><rect x="3" y="4" width="18" height="18" rx="2" fill="none" stroke={color} strokeWidth="1.5"/><line x1="16" y1="2" x2="16" y2="6" stroke={color} strokeWidth="1.5" strokeLinecap="round"/><line x1="8" y1="2" x2="8" y2="6" stroke={color} strokeWidth="1.5" strokeLinecap="round"/><line x1="3" y1="10" x2="21" y2="10" stroke={color} strokeWidth="1.5"/></>,
       user: <><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round"/><circle cx="12" cy="7" r="4" fill="none" stroke={color} strokeWidth="1.5"/></>,
     };
-    return <svg width={size} height={size} viewBox="0 0 24 24" fill="none">{icons[type]}</svg>;
+    return <svg width={size} height={size} viewBox="0 0 24 24" fill="none">{icons[type as keyof typeof icons]}</svg>;
   };
 
   // ============================================================
@@ -818,7 +818,7 @@ export default function Charoku() {
     const [name, setName] = useState(isEdit ? editZenTarget.name : "");
     const [reading, setReading] = useState(isEdit ? editZenTarget.reading : "");
     const [month, setMonth] = useState(isEdit ? editZenTarget.month : new Date().getMonth());
-    const [type, setType] = useState(isEdit ? editZenTarget.type : "銘");
+    const [type, setType] = useState<ZenPhrase["type"]>(isEdit ? editZenTarget!.type : "銘");
     const [meaning, setMeaning] = useState(isEdit ? editZenTarget.meaning : "");
     const [source, setSource] = useState(isEdit ? (editZenTarget.source || "") : "");
     const [learnedAt, setLearnedAt] = useState(isEdit ? (editZenTarget.learnedAt || "") : "");
@@ -826,7 +826,7 @@ export default function Charoku() {
     const handleSave = () => {
       if (!name) return;
       if (isEdit) {
-        updateCustomZen(editZenTarget.id, { name, reading, month, type, meaning, source, learnedAt });
+        updateCustomZen(editZenTarget!.id!, { name, reading, month, type, meaning, source, learnedAt });
       } else {
         addCustomZen({ name, reading, month, type, meaning, source, learnedAt });
       }
@@ -856,7 +856,7 @@ export default function Charoku() {
             <div>
               <label style={{ fontSize: 12, color: colors.textSecondary, marginBottom: 6, display: "block" }}>種類</label>
               <div style={{ display: "flex", gap: 8 }}>
-                {["禅語","銘","前後(禅語)","その他"].map(t => (
+                {(["禅語","銘","前後(禅語)","その他"] as ZenPhrase["type"][]).map(t => (
                   <button key={t} onClick={() => setType(t)} style={s.pill(type === t)}>{t}</button>
                 ))}
               </div>
@@ -895,7 +895,7 @@ export default function Charoku() {
   };
 
   // Usage recording sub-component
-  const UsageRecorder = ({ zen }) => {
+  const UsageRecorder = ({ zen }: { zen: ZenPhrase }) => {
     const [showForm, setShowForm] = useState(false);
     const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
     const [note, setNote] = useState("");
@@ -906,7 +906,7 @@ export default function Charoku() {
 
     const handleAdd = () => {
       if (zen.custom) {
-        addUsedDate(zen.id, date, note);
+        addUsedDate(zen.id!, date, note);
       } else {
         addBuiltinUsedDate(zen.name, date, note);
       }
@@ -942,7 +942,7 @@ export default function Charoku() {
 
         {usedDates.length > 0 ? (
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            {usedDates.slice().reverse().map((u, i) => (
+            {usedDates.slice().reverse().map((u: UsageRecord, i: number) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13 }}>
                 <span style={{ color: colors.textTertiary, fontSize: 12, minWidth: 80 }}>{u.date}</span>
                 <span style={{ color: colors.textSecondary }}>{u.note || "—"}</span>
@@ -1024,10 +1024,10 @@ export default function Charoku() {
               </h3>
 
               {[
-                { key: "interpretation", label: "意味と解釈", icon: "📖" },
-                { key: "history", label: "歴史的背景・出典", icon: "📜" },
-                { key: "tea_connection", label: "茶道との関わり", icon: "🍵" },
-                { key: "season_relation", label: "季節との関連", icon: "🌿" },
+                { key: "interpretation" as keyof AiExplanation, label: "意味と解釈", icon: "📖" },
+                { key: "history" as keyof AiExplanation, label: "歴史的背景・出典", icon: "📜" },
+                { key: "tea_connection" as keyof AiExplanation, label: "茶道との関わり", icon: "🍵" },
+                { key: "season_relation" as keyof AiExplanation, label: "季節との関連", icon: "🌿" },
               ].map(item => aiResult[item.key] && (
                 <div key={item.key} style={{ marginBottom: 14 }}>
                   <p style={{ fontSize: 12, fontWeight: 500, color: colors.textSecondary, marginBottom: 6 }}>
@@ -1077,7 +1077,7 @@ export default function Charoku() {
                 編集
               </button>
               <button
-                onClick={() => { if (confirm("この禅語・銘を削除しますか？")) deleteCustomZen(z.id); }}
+                onClick={() => { if (confirm("この禅語・銘を削除しますか？")) deleteCustomZen(z.id!); }}
                 style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", color: "#C77", fontSize: 12, cursor: "pointer", fontFamily: "inherit" }}>
                 <Icon type="trash" size={14} color="#C77" />
                 削除
