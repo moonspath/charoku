@@ -15,7 +15,7 @@ export default function Charoku() {
   const [customZen, setCustomZen] = useState(() => {
     try { return JSON.parse(localStorage.getItem("charoku_custom_zen")||"[]"); } catch { return []; }
   });
-  const [aiResult, setAiResult] = useState(null);
+  const [aiResult, setAiResult] = useState<AiExplanation | null>(null);
   const [aiLoading, setAiLoading] = useState(false);
   const [selectedZen, setSelectedZen] = useState(null);
   const [zenMonth, setZenMonth] = useState(() => new Date().getMonth());
