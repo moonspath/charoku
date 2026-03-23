@@ -41,7 +41,8 @@ JSON形式で回答してください。キーは "interpretation", "history", "
             },
           ],
           generationConfig: {
-            maxOutputTokens: 1000,
+            maxOutputTokens: 2048,
+            responseMimeType: "application/json",
           },
         }),
       }
@@ -58,7 +59,7 @@ JSON形式で回答してください。キーは "interpretation", "history", "
 
     const data = await response.json();
     const text = data.candidates?.[0]?.content?.parts?.map((p: { text?: string }) => p.text || "").join("\n") || "";
-    const clean = text.replace(/```json|```/g, "").trim();
+    const clean = text.replace(/```json\n?|```\n?/g, "").trim();
     const parsed = JSON.parse(clean);
 
     return NextResponse.json(parsed);
